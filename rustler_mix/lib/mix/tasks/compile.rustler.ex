@@ -84,8 +84,13 @@ defmodule Mix.Tasks.Compile.Rustler do
     # process, which might have the library dynamically linked in, does not generate
     # a segfault. By deleting it first, we ensure that the copy operation below does
     # not write into the existing file.
-    File.rm(destination_lib)
-    Process.sleep(100)
+    case File.rm(destination_lib) do
+      {:error, :eacces} -> raise "missing permission for #{destination_lib} or one of its parents"
+      {:error, :perm} -> raise "#{destination_lib} is a directory and you are not super-user"
+      {:error, :einval} -> raise "#{destination_lib} is not a valid file path"
+      _ -> nil
+    end
+
     File.cp!(compiled_lib, destination_lib)
   end
 
