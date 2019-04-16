@@ -212,6 +212,7 @@ defmodule Mix.Tasks.Compile.Rustler do
     if config[:build_embedded] do
       if File.exists?(source) do
         File.rm_rf!(target)
+        Process.sleep(2000)
         File.cp_r!(source, target)
       end
 
