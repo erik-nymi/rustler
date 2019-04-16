@@ -91,6 +91,9 @@ defmodule Mix.Tasks.Compile.Rustler do
       _ -> nil
     end
 
+    # Windows doesn't delete files quickly, pause because
+    Process.sleep(2000)
+
     File.cp!(compiled_lib, destination_lib)
   end
 
